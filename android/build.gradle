@@ -1,0 +1,38 @@
+// Archivo: D:\06MASW-A1\en_mi_ciudad\android\build.gradle
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        // Versión reciente del plugin Gradle para Android
+        // (compatible con Java 17)
+        classpath 'com.android.tools.build:gradle:8.0.2'
+
+        // Si tu proyecto usa Kotlin (p.ej., MainActivity en Kotlin),
+        // puedes agregar también el plugin de Kotlin:
+        // classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.22'
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.buildDir = '../build'
+
+subprojects {
+    // Redefine la carpeta de compilación para cada subproyecto
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+
+    // Asegura que ":app" se evalúe antes de otros subproyectos
+    project.evaluationDependsOn(':app')
+}
+
+tasks.register('clean', Delete) {
+    delete rootProject.buildDir
+}

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Archivo: android/app/src/main/AndroidManifest.xml
+  Descripción:
+  - Define metadatos y configuración nativa para la app “EnMiCiudad”.
+  - Actualiza el 'android:name' de la actividad y el paquete si difieren en tu proyecto.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.enmiciudad.app.en_mi_ciudad">
+
+    <!--
+       <application>:
+       - android:label define el nombre visible de la app en el launcher de Android.
+       - android:icon es el ícono de la app (ubicado en mipmap/ic_launcher).
+       - Quita android:name si no tienes una clase Application personalizada.
+    -->
+    <application
+        android:label="EnMiCiudad"
+        android:icon="@mipmap/ic_launcher">
+
+        <!--
+           <activity> principal (MainActivity):
+           - android:name debe coincidir con la ruta de tu clase MainActivity.
+           - android:exported="true" es obligatorio si hay un intent-filter
+             (requisito de Android 12+).
+           - android:launchMode="singleTop" previene crear múltiples instancias
+             de la actividad al abrir notificaciones, etc.
+           - android:theme define un estilo inicial (LaunchTheme) usado mientras arranca Flutter.
+           - android:configChanges y android:windowSoftInputMode son configuraciones típicas
+             para apps Flutter.
+           - Puedes eliminar android:taskAffinity si no usas afinidad de tareas específica.
+        -->
+        <activity
+            android:name="com.enmiciudad.app.en_mi_ciudad.MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:theme="@style/LaunchTheme"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="adjustResize">
+
+            <!--
+               Este meta-data indica un tema normal "NormalTheme" que Flutter aplica
+               tras el arranque. LaunchTheme se usa en la fase inicial.
+            -->
+            <meta-data
+                android:name="io.flutter.embedding.android.NormalTheme"
+                android:resource="@style/NormalTheme"/>
+
+            <!--
+               <intent-filter> para lanzar la actividad como MAIN (punto de entrada)
+               y LAUNCHER (se mostrará en la pantalla de apps).
+            -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
+        <!--
+           Este meta-data es usado por Flutter para generar el PluginRegistrant.
+           No lo borres.
+        -->
+        <meta-data
+            android:name="flutterEmbedding"
+            android:value="2" />
+
+    </application>
+
+    <!--
+       <queries>:
+       - Permite declarar búsquedas de actividades para la acción PROCESS_TEXT.
+       - Es requerido en apps que usan "ProcessTextPlugin" en Android 11+
+         para no tener restricciones de package visibility.
+    -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.PROCESS_TEXT"/>
+            <data android:mimeType="text/plain"/>
+        </intent>
+    </queries>
+
+</manifest>
