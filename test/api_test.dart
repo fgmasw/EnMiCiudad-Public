@@ -1,8 +1,12 @@
+// Archivo: D:\06MASW-A1\en_mi_ciudad\test\api_test.dart
+
 import 'package:flutter_test/flutter_test.dart';
-import 'package:en_mi_ciudad/services/api_service.dart';
+import 'package:en_mi_ciudad/models/event_model.dart';  // Para la clase Event
+import 'package:en_mi_ciudad/services/api_service.dart'; // Para ApiService
 
 void main() {
   group('ApiService Tests', () {
+
     // Test 1: Probar fetchEvents()
     test('fetchEvents should return a list of events', () async {
       final api = ApiService();
@@ -21,9 +25,8 @@ void main() {
     test('createEvent, updateEvent, deleteEvent flow', () async {
       final api = ApiService();
 
-      // 1. Crear un nuevo evento
+      // 1. Crear un nuevo evento (sin id, que lo asigne json_server)
       final newEvent = Event(
-        // id: no lo definimos, lo asignará json_server automáticamente
         title: 'Evento de Prueba Test',
         category: 'test',
         city: 'Ciudad de Ejemplo',
@@ -42,9 +45,9 @@ void main() {
       expect(created.id, isNotNull, reason: 'El evento recién creado no tiene ID.');
       expect(created.title, equals('Evento de Prueba Test'));
 
-      // 2. Actualizar el evento
+      // 2. Actualizar el evento (usamos el id generado)
       final updatedEvent = Event(
-        id: created.id, // Usamos el ID generado
+        id: created.id,
         title: 'Evento Actualizado en Test',
         category: created.category,
         city: created.city,
@@ -60,7 +63,7 @@ void main() {
       expect(updated.title, equals('Evento Actualizado en Test'),
           reason: 'No se ha actualizado correctamente el título.');
 
-      // 3. Eliminar el evento
+      // 3. Eliminar el evento usando su id
       await api.deleteEvent(updated.id!);
       print('Evento con ID ${updated.id} eliminado.');
 

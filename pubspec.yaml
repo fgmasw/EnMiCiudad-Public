@@ -24,11 +24,11 @@ dependencies:
 
   cupertino_icons: ^1.0.8
 
-  # Añade la librería http para peticiones GET, POST, etc.
+  # Librería http para peticiones GET, POST, etc.
   http: ^0.13.6
 
-  # (Opcional) Si necesitas SharedPreferences, descomenta o añade:
-  # shared_preferences: ^2.0.15
+  # Añade la librería shared_preferences para almacenar datos localmente.
+  shared_preferences: ^2.0.15
 
 dev_dependencies:
   flutter_test:
