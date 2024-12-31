@@ -1,29 +1,34 @@
+// Archivo: D:\06MASW-A1\en_mi_ciudad\android\app\build.gradle
+
 plugins {
+    // Usa la versión declarada en settings.gradle (AGP 8.2.2).
     id "com.android.application"
+    // Usa Kotlin si tu MainActivity.kt.
     id "kotlin-android"
-    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
+    // El plugin de Flutter se aplica después de los anteriores.
     id "dev.flutter.flutter-gradle-plugin"
 }
 
 android {
     namespace = "com.enmiciudad.app.en_mi_ciudad"
+
+    // Ajusta según tu Flutter config (puede venir de local.properties).
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
+    // Ajuste para usar Java 17, evitando warnings de Java 8 obsoleto.
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
+    // Si usas Kotlin nativo, ajusta a "17" para emparejar con Java 17.
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8
+        jvmTarget = "17"
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.enmiciudad.app.en_mi_ciudad"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
+        applicationId "com.enmiciudad.app.en_mi_ciudad"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
@@ -32,13 +37,18 @@ android {
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
+            // Aplica firma si tienes una config de signing.
             signingConfig = signingConfigs.debug
         }
     }
 }
 
+// Indica la ruta del código Flutter a compilar.
 flutter {
     source = "../.."
 }
+
+// Dependencias si necesitas .jar locales, librerías, etc.
+// dependencies {
+//     implementation fileTree(dir: "libs", include: ["*.jar"])
+// }

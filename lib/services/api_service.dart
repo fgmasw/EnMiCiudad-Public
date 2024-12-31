@@ -7,7 +7,8 @@ import 'package:en_mi_ciudad/models/event_model.dart';
 
 class ApiService {
   // Cambia 'localhost' a '10.0.2.2' si usas emulador Android.
-  final String baseUrl = 'http://localhost:3000';
+  // final String baseUrl = 'http://localhost:3000';
+  final String baseUrl = 'http://10.0.2.2:3000';
 
   /// (GET) Obtiene la lista de eventos: /events
   Future<List<Event>> fetchEvents() async {

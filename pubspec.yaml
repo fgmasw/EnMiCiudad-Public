@@ -25,7 +25,7 @@ dependencies:
   cupertino_icons: ^1.0.8
 
   # Librería http para peticiones GET, POST, etc.
-  http: ^0.13.6
+  http: ^1.2.2
 
   # Añade la librería shared_preferences para almacenar datos localmente.
   shared_preferences: ^2.0.15

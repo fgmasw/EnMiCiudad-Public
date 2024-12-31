@@ -6,12 +6,10 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        // Versión reciente del plugin Gradle para Android
-        // (compatible con Java 17)
-        classpath 'com.android.tools.build:gradle:8.0.2'
+        // AGP 8.2.2 (unificado con settings.gradle)
+        classpath 'com.android.tools.build:gradle:8.2.2'
 
-        // Si tu proyecto usa Kotlin (p.ej., MainActivity en Kotlin),
-        // puedes agregar también el plugin de Kotlin:
+        // Si tu proyecto usa Kotlin (MainActivity en .kt):
         // classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.22'
     }
 }
@@ -23,16 +21,16 @@ allprojects {
     }
 }
 
+// Se quita el bloque "afterEvaluate" problemático.
+// Reubicamos compileOptions en el app/build.gradle.
+
 rootProject.buildDir = '../build'
-
 subprojects {
-    // Redefine la carpeta de compilación para cada subproyecto
     project.buildDir = "${rootProject.buildDir}/${project.name}"
-
-    // Asegura que ":app" se evalúe antes de otros subproyectos
     project.evaluationDependsOn(':app')
 }
 
+// Tarea "clean" para limpiar el build.
 tasks.register('clean', Delete) {
     delete rootProject.buildDir
 }
