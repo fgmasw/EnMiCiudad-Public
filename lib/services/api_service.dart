@@ -3,22 +3,37 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:en_mi_ciudad/models/event_model.dart';
-// Importamos la clase Event desde event_model.dart
 
+/// Servicio para consumir el API REST (json_server) con los campos de tu db.json.
 class ApiService {
-  // Cambia 'localhost' a '10.0.2.2' si usas emulador Android.
-  // final String baseUrl = 'http://localhost:3000';
+  /// Cambia 'localhost' a '10.0.2.2' si usas emulador Android.
   final String baseUrl = 'http://10.0.2.2:3000';
 
   /// (GET) Obtiene la lista de eventos: /events
   Future<List<Event>> fetchEvents() async {
     final response = await http.get(Uri.parse('$baseUrl/events'));
     if (response.statusCode == 200) {
-      final List<dynamic> jsonList = jsonDecode(response.body);
+      // Decodifica usando bytes crudos + utf8.decode para asegurar acentos.
+      final decodedBody = utf8.decode(response.bodyBytes);
+      final List<dynamic> jsonList = jsonDecode(decodedBody);
       return jsonList.map((item) => Event.fromJson(item)).toList();
     } else {
       throw Exception('Error al obtener la lista de eventos');
     }
+  }
+
+  /// Retorna el siguiente ID secuencial como cadena (string).
+  /// Analiza el mayor ID numérico actual en /events y retorna max + 1.
+  Future<String> getNextSequentialId() async {
+    final events = await fetchEvents();
+    int maxId = 0;
+    for (final e in events) {
+      final currentId = int.tryParse(e.id ?? '0') ?? 0;
+      if (currentId > maxId) {
+        maxId = currentId;
+      }
+    }
+    return (maxId + 1).toString();
   }
 
   /// (POST) Crea un nuevo evento: /events
@@ -33,7 +48,8 @@ class ApiService {
     print('POST /events response: ${response.body}');
 
     if (response.statusCode == 201) {
-      final Map<String, dynamic> jsonMap = jsonDecode(response.body);
+      final decodedBody = utf8.decode(response.bodyBytes);
+      final Map<String, dynamic> jsonMap = jsonDecode(decodedBody);
       return Event.fromJson(jsonMap);
     } else {
       throw Exception('Error al crear el evento');
@@ -51,7 +67,8 @@ class ApiService {
       body: jsonEncode(updatedEvent.toJson()),
     );
     if (response.statusCode == 200) {
-      final Map<String, dynamic> jsonMap = jsonDecode(response.body);
+      final decodedBody = utf8.decode(response.bodyBytes);
+      final Map<String, dynamic> jsonMap = jsonDecode(decodedBody);
       return Event.fromJson(jsonMap);
     } else {
       throw Exception('Error al actualizar el evento');

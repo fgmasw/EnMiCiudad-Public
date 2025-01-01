@@ -5,7 +5,7 @@ import 'package:en_mi_ciudad/models/event_model.dart';
 import 'package:en_mi_ciudad/services/api_service.dart';
 
 class FormScreen extends StatefulWidget {
-  const FormScreen({Key? key}) : super(key: key);
+  const FormScreen({super.key});
 
   @override
   State<FormScreen> createState() => _FormScreenState();
@@ -26,34 +26,48 @@ class _FormScreenState extends State<FormScreen> {
   late TextEditingController _priceController;
   late TextEditingController _descriptionController;
 
-  // Para diferenciar si estamos en “Crear” o “Editar”
+  // Modo creación o edición
   Event? _editingEvent;
+  bool _didLoadArgs = false;
 
   @override
   void initState() {
     super.initState();
+    // Inicializa los controladores con strings vacíos
+    _titleController = TextEditingController();
+    _categoryController = TextEditingController();
+    _cityController = TextEditingController();
+    _typeController = TextEditingController();
+    _dateController = TextEditingController();
+    _hourController = TextEditingController();
+    _locationController = TextEditingController();
+    _priceController = TextEditingController();
+    _descriptionController = TextEditingController();
+  }
 
-    // Verificar si recibimos un Event como argumento (modo edición)
-    final args = ModalRoute.of(context)!.settings.arguments;
-    if (args != null && args is Event) {
-      _editingEvent = args;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_didLoadArgs) {
+      final args = ModalRoute.of(context)?.settings.arguments;
+      if (args != null && args is Event) {
+        _editingEvent = args;
+        _titleController.text = _editingEvent?.title ?? '';
+        _categoryController.text = _editingEvent?.category ?? '';
+        _cityController.text = _editingEvent?.city ?? '';
+        _typeController.text = _editingEvent?.type ?? '';
+        _dateController.text = _editingEvent?.date ?? '';
+        _hourController.text = _editingEvent?.hour ?? '';
+        _locationController.text = _editingEvent?.location ?? '';
+        _priceController.text = _editingEvent?.price ?? '';
+        _descriptionController.text = _editingEvent?.description ?? '';
+      }
+      _didLoadArgs = true;
     }
-
-    // Inicializar controladores
-    _titleController = TextEditingController(text: _editingEvent?.title ?? '');
-    _categoryController = TextEditingController(text: _editingEvent?.category ?? '');
-    _cityController = TextEditingController(text: _editingEvent?.city ?? '');
-    _typeController = TextEditingController(text: _editingEvent?.type ?? '');
-    _dateController = TextEditingController(text: _editingEvent?.date ?? '');
-    _hourController = TextEditingController(text: _editingEvent?.hour ?? '');
-    _locationController = TextEditingController(text: _editingEvent?.location ?? '');
-    _priceController = TextEditingController(text: _editingEvent?.price ?? '');
-    _descriptionController = TextEditingController(text: _editingEvent?.description ?? '');
   }
 
   @override
   void dispose() {
-    // Liberar recursos
     _titleController.dispose();
     _categoryController.dispose();
     _cityController.dispose();
@@ -66,12 +80,18 @@ class _FormScreenState extends State<FormScreen> {
     super.dispose();
   }
 
-  // Acción al pulsar en “Guardar”
   Future<void> _saveEvent() async {
     if (_formKey.currentState!.validate()) {
-      // Recogemos los valores del form
+      // Si estamos CREANDO (sin _editingEvent), calculamos un ID secuencial
+      String? finalId = _editingEvent?.id; // si editamos, conservamos su ID
+      if (_editingEvent == null) {
+        // Obtener el siguiente ID secuencial
+        finalId = await _apiService.getNextSequentialId();
+      }
+
+      // Construir el Event con la ID correspondiente
       final eventData = Event(
-        id: _editingEvent?.id, // null si estamos creando
+        id: finalId,
         title: _titleController.text.trim(),
         category: _categoryController.text.trim(),
         city: _cityController.text.trim(),
@@ -85,22 +105,21 @@ class _FormScreenState extends State<FormScreen> {
 
       try {
         if (_editingEvent == null) {
-          // Crear nuevo evento
+          // Crear
           await _apiService.createEvent(eventData);
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Evento creado correctamente')),
           );
         } else {
-          // Editar evento existente
+          // Editar
           await _apiService.updateEvent(eventData);
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Evento actualizado correctamente')),
           );
         }
 
-        // Volvemos a la pantalla anterior (o a Home)
+        // Retornamos true para indicar que se guardó algo
         Navigator.pop(context, true);
-        // Podemos devolver un bool para indicar “guardado con éxito”
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error al guardar el evento: $e')),
@@ -121,7 +140,7 @@ class _FormScreenState extends State<FormScreen> {
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Form(
-          key: _formKey, // Clave para validar
+          key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
