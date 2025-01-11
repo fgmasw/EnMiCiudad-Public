@@ -20,3 +20,7 @@
 - **Flutter SDK** (versión recomendada: 3.0+)
 - **Dart** (compatible con la versión de Flutter)
 - **json_server** corriendo en Docker o de manera local en el puerto `3000`
+
+## Demo en video
+Si deseas ver cómo funciona la aplicación, puedes echar un vistazo a la demo en YouTube:  
+[Demo de EnMiCiudad](https://www.youtube.com/watch?v=dj4AruILrgQ)
