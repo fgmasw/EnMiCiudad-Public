@@ -1,4 +1,4 @@
-// Archivo: D:\06MASW-A1\en_mi_ciudad\lib\screens\home_screen.dart
+// Guardé este archivo en: D:\06MASW-A1\en_mi_ciudad\lib\screens\home_screen.dart
 
 import 'package:flutter/material.dart';
 import 'package:en_mi_ciudad/services/api_service.dart';
@@ -16,31 +16,31 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final ApiService _apiService = ApiService();
 
-  // Lista completa de eventos descargados
+  // Guardé la lista completa de eventos descargados
   List<Event> _allEvents = [];
-  // Lista filtrada
+  // Guardé la lista filtrada
   List<Event> _filteredEvents = [];
 
-  // Modo oscuro
+  // Definí la variable de modo oscuro
   bool _isDarkMode = false;
 
-  // Filtro de ciudades
+  // Definí el filtro de ciudades
   final List<String> _cityFilterOptions = [
     'Todas',
     'Sao Paulo',
     'Rio de Janeiro',
   ];
-  String _selectedCityFilter = 'Todas'; // Por defecto
+  String _selectedCityFilter = 'Todas'; // Lo puse por defecto
 
   @override
   void initState() {
     super.initState();
 
     _loadDarkMode();
-    _initData(); // Cargar cityFilter de SharedPrefs y lista de eventos
+    _initData(); // Cargué cityFilter de SharedPrefs y obtuve lista de eventos
   }
 
-  /// Carga modo oscuro
+  /// Cargué el modo oscuro
   Future<void> _loadDarkMode() async {
     final bool dark = await SharedPrefsHelper.isDarkMode();
     setState(() {
@@ -48,24 +48,24 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  /// Carga la última ciudad guardada y la lista de eventos
+  /// Cargué la última ciudad guardada y obtuve la lista de eventos
   Future<void> _initData() async {
-    // 1) Leer última ciudad guardada
+    // 1) Leí la última ciudad guardada
     final lastCity = await SharedPrefsHelper.getLastCity();
-    // 2) Fetch de eventos
+    // 2) Hice fetch de eventos
     final events = await _apiService.fetchEvents();
 
-    // Actualizamos estado
+    // Actualicé el estado
     setState(() {
       if (lastCity != null && _cityFilterOptions.contains(lastCity)) {
         _selectedCityFilter = lastCity;
       }
       _allEvents = events;
-      _applyCityFilter(); // filtra con la ciudad actual
+      _applyCityFilter(); // Apliqué el filtro con la ciudad actual
     });
   }
 
-  /// Aplica el filtro según _selectedCityFilter
+  /// Apliqué el filtro según _selectedCityFilter
   void _applyCityFilter() {
     if (_selectedCityFilter == 'Todas') {
       _filteredEvents = List.from(_allEvents);
@@ -74,21 +74,21 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  /// Cambia y guarda la ciudad elegida
+  /// Cambié y guardé la ciudad elegida
   Future<void> _updateFilterCity(String newCity) async {
-    // Actualizamos la variable local en el mismo setState
+    // Actualicé la variable local en el mismo setState
     setState(() {
       _selectedCityFilter = newCity;
     });
-    // Guardamos en SharedPrefs
+    // Guardé en SharedPrefs
     await SharedPrefsHelper.saveLastCity(newCity);
-    // Luego aplicamos el filtro
+    // Apliqué el filtro después
     setState(() {
       _applyCityFilter();
     });
   }
 
-  /// Alterna modo oscuro
+  /// Alterné el modo oscuro
   Future<void> _toggleDarkMode() async {
     final newValue = !_isDarkMode;
     setState(() {
@@ -99,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Colores según modo oscuro
+    // Definí colores según modo oscuro
     final backgroundColor = _isDarkMode ? Colors.grey[900] : Colors.white;
     final textColor = _isDarkMode ? Colors.white : Colors.black;
     final appBarColor = _isDarkMode ? Colors.grey[850] : Theme.of(context).primaryColor;
@@ -110,13 +110,13 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Text('EnMiCiudad', style: TextStyle(color: textColor)),
         backgroundColor: appBarColor,
         actions: [
-          // Botón modo oscuro
+          // Mostré el botón de modo oscuro
           IconButton(
             icon: Icon(_isDarkMode ? Icons.dark_mode : Icons.light_mode, color: textColor),
             tooltip: 'Cambiar modo oscuro/claro',
             onPressed: _toggleDarkMode,
           ),
-          // Botón crear
+          // Mostré el botón para crear
           IconButton(
             icon: const Icon(Icons.add),
             tooltip: 'Crear nuevo evento',
@@ -135,14 +135,14 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Column(
         children: [
-          // Barra de selección de ciudad
+          // Mostré la barra de selección de ciudad
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
               children: [
                 Text('Filtrar ciudad:', style: TextStyle(color: textColor)),
                 const SizedBox(width: 16),
-                // Filtro de ciudades con DropDown
+                // Puse el filtro de ciudades con DropDown
                 Expanded(
                   child: DropdownButton<String>(
                     dropdownColor: _isDarkMode ? Colors.grey[800] : Colors.white,
@@ -163,7 +163,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),
-          // Lista de eventos filtrados
+          // Mostré la lista de eventos filtrados
           Expanded(
             child: _filteredEvents.isEmpty
                 ? Center(
@@ -186,7 +186,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       arguments: event,
                     );
                     if (result == true) {
-                      // Si se editó/eliminó
+                      // Verifiqué si se editó/eliminó
                       final newEvents = await _apiService.fetchEvents();
                       setState(() {
                         _allEvents = newEvents;

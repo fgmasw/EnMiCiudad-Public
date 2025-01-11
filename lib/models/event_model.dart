@@ -1,7 +1,7 @@
-// Archivo: D:\06MASW-A1\en_mi_ciudad\lib\models\event_model.dart
+// Guardé este archivo en: D:\06MASW-A1\en_mi_ciudad\lib\models\event_model.dart
 
-/// Representa un evento con todos los campos que figuran en tu db.json.
-/// 'id' es un String para soportar retornos como "19e4" o "abc123".
+/// Describí un evento con todos los campos que tenía en mi db.json.
+/// 'id' lo puse como String para manejar valores como "19e4" o "abc123".
 class Event {
   final String? id;
   final String title;
@@ -27,8 +27,8 @@ class Event {
     required this.description,
   });
 
-  /// Construye un Event a partir de un objeto JSON.
-  /// 'id' se obtiene tal cual string, por si json_server retorna algo no decimal.
+  /// Construí un Event desde un objeto JSON.
+  /// Guardé 'id' como string, por si json_server devolvía algo que no fuera decimal.
   factory Event.fromJson(Map<String, dynamic> json) {
     final dynamic rawId = json['id'];
     final String? stringId = rawId?.toString();
@@ -47,8 +47,8 @@ class Event {
     );
   }
 
-  /// Convierte este Event a un Map para serializar a JSON.
-  /// Omitimos 'id' para que json_server lo genere o mantenga.
+  /// Convertí este Event en un Map para serializarlo a JSON.
+  /// Omití 'id' para que json_server lo generara o lo mantuviera.
   Map<String, dynamic> toJson() {
     return {
       'title': title,

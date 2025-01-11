@@ -1,6 +1,6 @@
-// Archivo: D:\06MASW-A1\en_mi_ciudad\android\settings.gradle
+// Guardé este archivo en: D:\06MASW-A1\en_mi_ciudad\android\settings.gradle
 
-import java.util.Properties  // Para que 'Properties' sea reconocido en Groovy DSL
+import java.util.Properties  // Comenté que importé 'Properties' para usarlo en Groovy DSL
 
 pluginManagement {
     def flutterSdkPath = {
@@ -21,13 +21,13 @@ pluginManagement {
 }
 
 plugins {
-    // Plugin de Flutter.
+    // Usé el plugin de Flutter.
     id "dev.flutter.flutter-plugin-loader" version "1.0.0"
 
-    // AGP 8.2.2 para com.android.application (unificado con build.gradle).
+    // Configuré AGP 8.2.2 para com.android.application (lo unifiqué con build.gradle).
     id "com.android.application" version "8.2.2" apply false
 
-    // Kotlin Android (si usas archivos .kt en el nativo).
+    // Declaré Kotlin Android (en caso de usar archivos .kt nativos).
     id "org.jetbrains.kotlin.android" version "1.8.22" apply false
 }
 

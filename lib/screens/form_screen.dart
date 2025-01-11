@@ -1,10 +1,10 @@
-// Archivo: D:\06MASW-A1\en_mi_ciudad\lib\screens\form_screen.dart
+// Guardé este archivo en: D:\06MASW-A1\en_mi_ciudad\lib\screens\form_screen.dart
 
 import 'package:flutter/material.dart';
 import 'package:en_mi_ciudad/models/event_model.dart';
 import 'package:en_mi_ciudad/services/api_service.dart';
 
-// Importa tu helper de SharedPreferences para isDarkMode()
+// Importé el helper de SharedPreferences para isDarkMode()
 import 'package:en_mi_ciudad/utils/shared_prefs_helper.dart';
 
 class FormScreen extends StatefulWidget {
@@ -15,16 +15,17 @@ class FormScreen extends StatefulWidget {
 }
 
 class _FormScreenState extends State<FormScreen> {
+  // Definí la key del formulario y el servicio de API
   final _formKey = GlobalKey<FormState>();
   final ApiService _apiService = ApiService();
 
-  // Controladores para los campos
+  // Declaré los controladores para los campos
   late TextEditingController _titleController;
   late TextEditingController _locationController;
   late TextEditingController _priceController;
   late TextEditingController _descriptionController;
 
-  // Listas para dropdown
+  // Definí las listas para los dropdown
   final List<String> _categoryList = [
     'fiestas',
     'arte',
@@ -45,36 +46,36 @@ class _FormScreenState extends State<FormScreen> {
     'Rio de Janeiro',
   ];
 
-  // Variables para dropdown
+  // Declaré las variables para dropdown
   String? _selectedCategory;
   String? _selectedType;
   String? _selectedCity;
 
-  // Para fecha y hora
+  // Definí estas variables para la fecha y la hora
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
 
-  // Evento en modo edición
+  // Configuré el evento en modo edición
   Event? _editingEvent;
   bool _didLoadArgs = false;
 
-  // Para modo oscuro
+  // Declaré la variable para modo oscuro
   bool _isDarkMode = false;
 
   @override
   void initState() {
     super.initState();
-    // Inicializamos controladores
+    // Inicialicé los controladores
     _titleController = TextEditingController();
     _locationController = TextEditingController();
     _priceController = TextEditingController();
     _descriptionController = TextEditingController();
 
-    // Cargar modo oscuro desde SharedPreferences
+    // Cargué el modo oscuro desde SharedPreferences
     _loadDarkMode();
   }
 
-  /// Carga el flag de modo oscuro de SharedPreferences
+  /// Cargué el flag de modo oscuro desde SharedPreferences
   Future<void> _loadDarkMode() async {
     final dark = await SharedPrefsHelper.isDarkMode();
     setState(() {
@@ -86,29 +87,30 @@ class _FormScreenState extends State<FormScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (!_didLoadArgs) {
+      // Revisé si llegaron argumentos de edición
       final args = ModalRoute.of(context)?.settings.arguments;
       if (args != null && args is Event) {
         _editingEvent = args;
 
-        // Carga datos en los TextField
+        // Cargué datos en los TextField
         _titleController.text = _editingEvent?.title ?? '';
         _locationController.text = _editingEvent?.location ?? '';
         _priceController.text = _editingEvent?.price ?? '';
         _descriptionController.text = _editingEvent?.description ?? '';
 
-        // Carga dropdowns
+        // Cargué valores en los dropdowns
         _selectedCategory = _editingEvent?.category;
         _selectedType = _editingEvent?.type;
         _selectedCity = _editingEvent?.city;
 
-        // Fecha (yyyy-MM-dd)
+        // Cargué la fecha (yyyy-MM-dd)
         if (_editingEvent?.date != null && _editingEvent!.date.isNotEmpty) {
           try {
             _selectedDate = DateTime.parse(_editingEvent!.date);
           } catch (_) {}
         }
 
-        // Hora (HH:MM)
+        // Cargué la hora (HH:MM)
         if (_editingEvent?.hour != null && _editingEvent!.hour.isNotEmpty) {
           final parts = _editingEvent!.hour.split(':');
           if (parts.length == 2) {
@@ -124,6 +126,7 @@ class _FormScreenState extends State<FormScreen> {
 
   @override
   void dispose() {
+    // Liberé los controladores
     _titleController.dispose();
     _locationController.dispose();
     _priceController.dispose();
@@ -131,6 +134,7 @@ class _FormScreenState extends State<FormScreen> {
     super.dispose();
   }
 
+  // Abrí el selector de fecha
   Future<void> _pickDate() async {
     final now = DateTime.now();
     final picked = await showDatePicker(
@@ -146,6 +150,7 @@ class _FormScreenState extends State<FormScreen> {
     }
   }
 
+  // Abrí el selector de hora
   Future<void> _pickTime() async {
     final picked = await showTimePicker(
       context: context,
@@ -158,15 +163,16 @@ class _FormScreenState extends State<FormScreen> {
     }
   }
 
+  // Guardé el evento con validación y manejo de creación/edición
   Future<void> _saveEvent() async {
     if (_formKey.currentState!.validate()) {
-      // ID
+      // Generé u obtuve el ID
       String? finalId = _editingEvent?.id;
       if (_editingEvent == null) {
         finalId = await _apiService.getNextSequentialId();
       }
 
-      // Convertir la fecha y la hora a String
+      // Convertí fecha y hora a String
       String dateString = '';
       if (_selectedDate != null) {
         dateString =
@@ -197,13 +203,13 @@ class _FormScreenState extends State<FormScreen> {
 
       try {
         if (_editingEvent == null) {
-          // Crear
+          // Creé un nuevo evento
           await _apiService.createEvent(eventData);
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Evento creado correctamente')),
           );
         } else {
-          // Editar
+          // Actualicé un evento existente
           await _apiService.updateEvent(eventData);
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Evento actualizado correctamente')),
@@ -220,15 +226,16 @@ class _FormScreenState extends State<FormScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Verifiqué si era edición
     final isEditMode = _editingEvent != null;
     final titleAppBar = isEditMode ? 'Editar Evento' : 'Nuevo Evento';
 
-    // Colores según _isDarkMode
+    // Definí colores según _isDarkMode
     final backgroundColor = _isDarkMode ? Colors.grey[900] : Colors.white;
     final textColor = _isDarkMode ? Colors.white : Colors.black;
     final appBarColor = _isDarkMode ? Colors.grey[850] : Theme.of(context).primaryColor;
 
-    // Convertimos fecha/hora a String
+    // Convertí la fecha/hora a String
     final dateText = _selectedDate == null
         ? ''
         : "${_selectedDate!.year.toString().padLeft(4, '0')}"
@@ -255,12 +262,12 @@ class _FormScreenState extends State<FormScreen> {
         child: Form(
           key: _formKey,
           child: DefaultTextStyle(
-            // Aplica color de texto por defecto a los children
+            // Apliqué el color de texto por defecto a los children
             style: TextStyle(color: textColor),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Título
+                // Definí el campo para el título
                 TextFormField(
                   controller: _titleController,
                   style: TextStyle(color: textColor),
@@ -282,7 +289,7 @@ class _FormScreenState extends State<FormScreen> {
                 ),
                 const SizedBox(height: 10),
 
-                // Categoría
+                // Definí el campo para la categoría (dropdown)
                 DropdownButtonFormField<String>(
                   decoration: InputDecoration(
                     labelText: 'Categoría',
@@ -305,7 +312,7 @@ class _FormScreenState extends State<FormScreen> {
                 ),
                 const SizedBox(height: 10),
 
-                // Ciudad
+                // Definí el campo para la ciudad (dropdown)
                 DropdownButtonFormField<String>(
                   decoration: InputDecoration(
                     labelText: 'Ciudad',
@@ -328,7 +335,7 @@ class _FormScreenState extends State<FormScreen> {
                 ),
                 const SizedBox(height: 10),
 
-                // Tipo
+                // Definí el campo para el tipo (dropdown)
                 DropdownButtonFormField<String>(
                   decoration: InputDecoration(
                     labelText: 'Tipo',
@@ -351,7 +358,7 @@ class _FormScreenState extends State<FormScreen> {
                 ),
                 const SizedBox(height: 10),
 
-                // Fecha
+                // Manejé la selección de fecha
                 Text(
                   'Fecha (AAAA-MM-DD)',
                   style: TextStyle(color: textColor),
@@ -369,7 +376,7 @@ class _FormScreenState extends State<FormScreen> {
                 ),
                 const SizedBox(height: 10),
 
-                // Hora
+                // Manejé la selección de hora
                 Text(
                   'Hora (HH:MM)',
                   style: TextStyle(color: textColor),
@@ -387,7 +394,7 @@ class _FormScreenState extends State<FormScreen> {
                 ),
                 const SizedBox(height: 10),
 
-                // Ubicación
+                // Definí el campo para la ubicación
                 TextFormField(
                   controller: _locationController,
                   style: TextStyle(color: textColor),
@@ -403,7 +410,7 @@ class _FormScreenState extends State<FormScreen> {
                 ),
                 const SizedBox(height: 10),
 
-                // Precio
+                // Definí el campo para el precio
                 TextFormField(
                   controller: _priceController,
                   style: TextStyle(color: textColor),
@@ -419,7 +426,7 @@ class _FormScreenState extends State<FormScreen> {
                 ),
                 const SizedBox(height: 10),
 
-                // Descripción
+                // Definí el campo para la descripción
                 TextFormField(
                   controller: _descriptionController,
                   maxLines: 3,
@@ -436,7 +443,7 @@ class _FormScreenState extends State<FormScreen> {
                 ),
                 const SizedBox(height: 20),
 
-                // Botón Guardar
+                // Añadí el botón para guardar
                 Align(
                   alignment: Alignment.centerRight,
                   child: ElevatedButton(

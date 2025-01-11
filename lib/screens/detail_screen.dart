@@ -1,10 +1,10 @@
-// Archivo: D:\06MASW-A1\en_mi_ciudad\lib\screens\detail_screen.dart
+// Guardé este archivo en: D:\06MASW-A1\en_mi_ciudad\lib\screens\detail_screen.dart
 
 import 'package:flutter/material.dart';
 import 'package:en_mi_ciudad/models/event_model.dart';
 import 'package:en_mi_ciudad/services/api_service.dart';
 
-// Importamos el helper de SharedPreferences para leer isDarkMode():
+// Importé el helper de SharedPreferences para leer isDarkMode():
 import 'package:en_mi_ciudad/utils/shared_prefs_helper.dart';
 
 class DetailScreen extends StatefulWidget {
@@ -18,17 +18,17 @@ class _DetailScreenState extends State<DetailScreen> {
   late Event event;
   final apiService = ApiService();
 
-  // Variable para saber si estamos en modo oscuro
+  // Declaré esta variable para saber si estaba en modo oscuro
   bool _isDarkMode = false;
 
   @override
   void initState() {
     super.initState();
-    // Cargar el modo oscuro desde SharedPreferences
+    // Cargué el modo oscuro desde SharedPreferences
     _loadDarkMode();
   }
 
-  /// Lee la preferencia darkMode de SharedPreferences
+  /// Leí la preferencia darkMode de SharedPreferences
   Future<void> _loadDarkMode() async {
     final bool dark = await SharedPrefsHelper.isDarkMode();
     setState(() {
@@ -39,13 +39,13 @@ class _DetailScreenState extends State<DetailScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Recibimos el objeto Event solo cuando tenemos acceso al context
+    // Obtuve el objeto Event cuando ya tuve acceso al context
     event = ModalRoute.of(context)!.settings.arguments as Event;
   }
 
   @override
   Widget build(BuildContext context) {
-    // Definimos colores según _isDarkMode
+    // Definí colores según _isDarkMode
     final backgroundColor = _isDarkMode ? Colors.grey[900] : Colors.white;
     final textColor = _isDarkMode ? Colors.white : Colors.black;
     final appBarColor = _isDarkMode ? Colors.grey[850] : Theme.of(context).primaryColor;
@@ -65,7 +65,7 @@ class _DetailScreenState extends State<DetailScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Título del evento
+            // Mostré el título del evento
             Text(
               event.title,
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
@@ -75,7 +75,7 @@ class _DetailScreenState extends State<DetailScreen> {
             ),
             const SizedBox(height: 8),
 
-            // Categoría y Fecha
+            // Mostré la categoría y la fecha
             Row(
               children: [
                 Text(
@@ -95,7 +95,7 @@ class _DetailScreenState extends State<DetailScreen> {
             ),
             const SizedBox(height: 6),
 
-            // Ciudad y Hora
+            // Mostré la ciudad y la hora
             Row(
               children: [
                 Text(
@@ -115,7 +115,7 @@ class _DetailScreenState extends State<DetailScreen> {
             ),
             const SizedBox(height: 6),
 
-            // Tipo, Precio
+            // Mostré el tipo y el precio
             Text(
               'Tipo: ${event.type}',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -131,7 +131,7 @@ class _DetailScreenState extends State<DetailScreen> {
             ),
             const SizedBox(height: 16),
 
-            // Ubicación
+            // Mostré la ubicación
             Row(
               children: [
                 Icon(
@@ -151,7 +151,7 @@ class _DetailScreenState extends State<DetailScreen> {
             ),
             const SizedBox(height: 16),
 
-            // Descripción
+            // Mostré la descripción
             Text(
               'Descripción:',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -168,7 +168,7 @@ class _DetailScreenState extends State<DetailScreen> {
             ),
             const Spacer(),
 
-            // Botones de acción (Editar, Eliminar, Volver)
+            // Agregué los botones de edición, eliminación y volver
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -177,13 +177,13 @@ class _DetailScreenState extends State<DetailScreen> {
                   icon: const Icon(Icons.edit),
                   label: const Text('Editar'),
                   onPressed: () async {
-                    // Navegar a FormScreen para editar, pasando el objeto Event
+                    // Navegué a FormScreen para editar, pasando el objeto Event
                     final result = await Navigator.pushNamed(
                       context,
                       '/form',
                       arguments: event,
                     );
-                    // Si regresamos con true, refrescar al salir de detail
+                    // Revisé si volvía con true para refrescar al salir de detail
                     if (context.mounted && result == true) {
                       Navigator.pop(context, true);
                     }
@@ -199,7 +199,7 @@ class _DetailScreenState extends State<DetailScreen> {
                     backgroundColor: Colors.red,
                   ),
                   onPressed: () async {
-                    // Confirmación
+                    // Mostré un cuadro de diálogo para confirmar
                     final confirm = await showDialog<bool>(
                       context: context,
                       builder: (ctx) => AlertDialog(
@@ -222,6 +222,7 @@ class _DetailScreenState extends State<DetailScreen> {
 
                     if (confirm == true) {
                       try {
+                        // Eliminé el evento si tenía un ID válido
                         if (event.id != null) {
                           await apiService.deleteEvent(event.id!);
                           ScaffoldMessenger.of(context).showSnackBar(
